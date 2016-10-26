@@ -12,7 +12,7 @@ db = SQLAlchemy(app)
 class Bowler(db.Model):
     __tablename__ = 'bowlers'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True)
+    name = db.Column(db.String(80))
     bowled = db.Column(db.Integer)
     caught = db.Column(db.Integer)
     caught_behind = db.Column(db.Integer)
@@ -26,13 +26,13 @@ class Bowler(db.Model):
     def __repr__(self):
         return self.name
 
-# db.create_all()
+db.create_all()
 
 def get_url(player):
     url = "http://www.howstat.com.au/cricket/Statistics/Players/PlayerDismissBowlGraph.asp?PlayerID={}".format(player)
     return url
 
-for i in range(2, 3176): #3176
+for i in range(1, 3176): #3176
     i = '{0:04}'.format(i)
     url = get_url(i)
     print(url)
@@ -62,6 +62,6 @@ for i in range(2, 3176): #3176
                             caught_behind=caught_behind, lbw=lbw, stumped=stumped,
                             hit_wicket=hit_wicket)
             db.session.add(player)
+            db.session.commit()
             print(bowler_table) #[0].strip()
 
-db.session.commit()
