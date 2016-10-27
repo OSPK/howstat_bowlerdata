@@ -12,13 +12,14 @@ db = SQLAlchemy(app)
 class Bowler(db.Model):
     __tablename__ = 'bowlers'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
+    name = db.Column(db.String(80), index=True)
     bowled = db.Column(db.Integer)
     caught = db.Column(db.Integer)
     caught_behind = db.Column(db.Integer)
     lbw = db.Column(db.Integer)
     stumped = db.Column(db.Integer)
     hit_wicket = db.Column(db.Integer)
+    total = db.Column(db.Integer)
 
     def __init__(self, **kwargs):
         super(Bowler, self).__init__(**kwargs)
@@ -26,13 +27,14 @@ class Bowler(db.Model):
     def __repr__(self):
         return self.name
 
+'''
 db.create_all()
 
 def get_url(player):
     url = "http://www.howstat.com.au/cricket/Statistics/Players/PlayerDismissBowlGraph.asp?PlayerID={}".format(player)
     return url
 
-for i in range(1, 3176): #3176
+for i in range(24, 3176): #3176
     i = '{0:04}'.format(i)
     url = get_url(i)
     print(url)
@@ -64,4 +66,10 @@ for i in range(1, 3176): #3176
             db.session.add(player)
             db.session.commit()
             print(bowler_table) #[0].strip()
+'''
+# bowlers = Bowler.query.all()
 
+# for bowler in bowlers:
+#     bowler.total = bowler.bowled + bowler.caught + bowler.caught_behind + bowler.lbw + bowler.stumped + bowler.hit_wicket
+#     db.session.commit()
+#     print(bowler.name, bowler.total)
