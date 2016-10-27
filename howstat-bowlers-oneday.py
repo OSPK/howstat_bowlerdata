@@ -27,45 +27,48 @@ class Bowler(db.Model):
     def __repr__(self):
         return self.name
 
-db.create_all()
+# db.create_all()
 # Fetch from Howstat
 
-def get_url(player):
-    url = "http://www.howstat.com.au/cricket/Statistics/Players/PlayerDismissBowlGraph_ODI.asp?PlayerID={}".format(player)
-    return url
+# def get_url(player):
+#     url = "http://www.howstat.com.au/cricket/Statistics/Players/PlayerDismissBowlGraph_ODI.asp?PlayerID={}".format(player)
+#     return url
 
-for i in range(1, 3176): #3176
-    i = '{0:04}'.format(i)
-    url = get_url(i)
-    print(url)
+# for i in range(3176, 3295): #3176
+#     i = '{0:04}'.format(i)
+#     url = get_url(i)
+#     print(url)
 
-    player_page = requests.get(url)
+#     player_page = requests.get(url)
 
-    if player_page.status_code is 200:
-        soup = BeautifulSoup(player_page.text, 'html.parser')
+#     if player_page.status_code is 200:
+#         soup = BeautifulSoup(player_page.text, 'html.parser')
 
-        player_name = soup.title.string.split(" - ")[1]
+#         player_name = soup.title.string.split(" - ")[1]
 
-        bowled = soup.find(text=re.compile('Bowled'))
+#         bowled = soup.find(text=re.compile('Bowled'))
 
-        if bowled is not None:
-            bowled = bowled.findNext('td').text.strip()
-            caught = soup.find(text=re.compile('Caught')).findNext('td').text.strip()
-            caught_behind = soup.find(text=re.compile('Caught Behind')).findNext('td').text.strip()
-            lbw = soup.find(text=re.compile('LBW')).findNext('td').text.strip()
-            stumped = soup.find(text=re.compile('Stumped')).findNext('td').text.strip()
-            hit_wicket = soup.find(text=re.compile('Hit Wicket')).findNext('td').text.strip()
+#         if bowled is not None:
+#             bowled = bowled.findNext('td').text.strip()
+#             caught = soup.find(text=re.compile('Caught')).findNext('td').text.strip()
+#             caught_behind = soup.find(text=re.compile('Caught Behind')).findNext('td').text.strip()
+#             lbw = soup.find(text=re.compile('LBW')).findNext('td').text.strip()
+#             stumped = soup.find(text=re.compile('Stumped')).findNext('td').text.strip()
+#             hit_wicket = soup.find(text=re.compile('Hit Wicket')).findNext('td').text.strip()
 
-            bowler_table = {"name":player_name, "bowled":bowled, "caught":caught,
-                            "caught_behind":caught_behind, "lbw":lbw, "stumped":stumped,
-                            "hit_wicket":hit_wicket}
+#             bowler_table = {"name":player_name, "bowled":bowled, "caught":caught,
+#                             "caught_behind":caught_behind, "lbw":lbw, "stumped":stumped,
+#                             "hit_wicket":hit_wicket}
 
-            player = Bowler(name=player_name, bowled=bowled, caught=caught,
-                            caught_behind=caught_behind, lbw=lbw, stumped=stumped,
-                            hit_wicket=hit_wicket)
-            db.session.add(player)
-            db.session.commit()
-            print(bowler_table) #[0].strip()
+#             player = Bowler(name=player_name, bowled=bowled, caught=caught,
+#                             caught_behind=caught_behind, lbw=lbw, stumped=stumped,
+#                             hit_wicket=hit_wicket)
+#             db.session.add(player)
+#             db.session.commit()
+#             print(bowler_table) #[0].strip()
 
-# bowlers = Bowler.query.all()
+bowlers = Bowler.query.all()
 
+for bowler in bowlers:
+    bowler.total = bowler.bowled + bowler.caught + bowler.caught_behind + bowler.lbw + bowler.stumped + bowler.hit_wicket
+    db.session.commit()
