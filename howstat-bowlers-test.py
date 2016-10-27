@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test-bowlers-howstat.db'
 db = SQLAlchemy(app)
 
 class Bowler(db.Model):
@@ -27,8 +27,8 @@ class Bowler(db.Model):
     def __repr__(self):
         return self.name
 
-'''
 db.create_all()
+# Fetch from Howstat
 
 def get_url(player):
     url = "http://www.howstat.com.au/cricket/Statistics/Players/PlayerDismissBowlGraph.asp?PlayerID={}".format(player)
@@ -66,10 +66,6 @@ for i in range(24, 3176): #3176
             db.session.add(player)
             db.session.commit()
             print(bowler_table) #[0].strip()
-'''
+
 # bowlers = Bowler.query.all()
 
-# for bowler in bowlers:
-#     bowler.total = bowler.bowled + bowler.caught + bowler.caught_behind + bowler.lbw + bowler.stumped + bowler.hit_wicket
-#     db.session.commit()
-#     print(bowler.name, bowler.total)
